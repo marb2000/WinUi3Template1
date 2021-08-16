@@ -13,19 +13,24 @@ namespace WinUi3Template1
             this.InitializeComponent();
         }
 
-        private void StatusMessage_Click(object sender, RoutedEventArgs e)
+        private void SuccessMessage_Click(object sender, RoutedEventArgs e)
         {
-            rootPage.NotifyUser("Hello",InfoBarSeverity.Informational);
+            rootPage.NotifyUser("Everything was ok!",InfoBarSeverity.Success);
         }
 
         private void ErrorMessage_Click(object sender, RoutedEventArgs e)
         {
-            rootPage.NotifyUser("Oh dear.\nSomething went wrong. Very wrong.", InfoBarSeverity.Error);
+            rootPage.NotifyUser("Something went wrong.", InfoBarSeverity.Error);
+        }
+
+        private void InformationalMessage_Click(object sender, RoutedEventArgs e)
+        {
+            rootPage.NotifyUser("This is the informational bar.", InfoBarSeverity.Informational);
         }
 
         private void ClearMessage_Click(object sender, RoutedEventArgs e)
         {
-            rootPage.NotifyUser("", InfoBarSeverity.Informational,false);
+            rootPage.NotifyUser("", InfoBarSeverity.Informational, false);
         }
     }
 }
