@@ -1,5 +1,11 @@
 ﻿using Microsoft.UI.Xaml;
 using System;
+using Windows.Win32.Foundation;
+using Windows.Win32.UI.Controls;
+using Windows.Win32.UI.WindowsAndMessaging;
+
+using static Windows.Win32.PInvoke;
+using static Windows.Win32.Constants;
 
 namespace WinUi3Template1
 {
@@ -12,29 +18,28 @@ namespace WinUi3Template1
             Title = Settings.FeatureName;
 
             var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
-            LoadIcon(hwnd,"Assets/windows-sdk.ico");
+            LoadIcon(hwnd, "Assets/windows-sdk.ico");
             SetWindowSize(hwnd, 1920, 1080);
         }
 
         private void LoadIcon(IntPtr hwnd, string iconName)
         {
+            var hIcon = LoadImage(null, iconName, GDI_IMAGE_TYPE.IMAGE_ICON, 16, 16, IMAGE_FLAGS.LR_LOADFROMFILE);
 
-            IntPtr hIcon = PInvoke.User32.LoadImage(IntPtr.Zero, iconName,
-                PInvoke.User32.ImageType.IMAGE_ICON, 16, 16, PInvoke.User32.LoadImageFlags.LR_LOADFROMFILE);
-
-            PInvoke.User32.SendMessage(hwnd, PInvoke.User32.WindowMessage.WM_SETICON, (IntPtr)0, hIcon);
+            var success = false;
+            hIcon.DangerousAddRef(ref success);
+            SendMessage((HWND)hwnd, WM_SETICON, 0, hIcon.DangerousGetHandle());
+            hIcon.DangerousRelease();
         }
         private void SetWindowSize(IntPtr hwnd, int width, int height)
         {
             // Win32 uses pixels and WinUI 3 uses effective pixels, so you should apply the DPI scale factor
-            var dpi = PInvoke.User32.GetDpiForWindow(hwnd);
+            var dpi = GetDpiForWindow((HWND)hwnd);
             float scalingFactor = (float)dpi / 96;
             width = (int)(width * scalingFactor);
             height = (int)(height * scalingFactor);
 
-            PInvoke.User32.SetWindowPos(hwnd, PInvoke.User32.SpecialWindowHandles.HWND_TOP,
-                                        0, 0, width, height,
-                                        PInvoke.User32.SetWindowPosFlags.SWP_NOMOVE);
+            SetWindowPos((HWND)hwnd, HWND_TOP, 0, 0, width, height, SET_WINDOW_POS_FLAGS.SWP_NOMOVE);
         }
     }
 }
